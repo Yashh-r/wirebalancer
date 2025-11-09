@@ -1,0 +1,10 @@
+*.conf
+*.zip
+*.log
+.DS_Store
+/wip/*
+config.yml
+config.yml.bak
+# Custom-made project management files
+.vision-project
+.vision-properties

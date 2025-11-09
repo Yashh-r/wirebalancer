@@ -1,0 +1,29 @@
+wireguard:
+  # Health check configuration
+  health_check_url: "https://cloudflare.com/cdn-cgi/trace"
+  health_check_interval: 30  # seconds
+  failure_threshold: 3       # consecutive failures before marking unhealthy
+
+  # WireGuard connections configuration
+  connections:
+    - name: "Connection 1"
+      interface_name: "wg0"
+      config_path: "/etc/wireguard/wg0.conf"
+    
+    - name: "Connection 2"
+      interface_name: "wg1"
+      config_path: "/etc/wireguard/wg1.conf"
+    
+    - name: "Connection 3"
+      interface_name: "wg2"
+      config_path: "/etc/wireguard/wg2.conf"
+
+proxy:
+  base_port: 9930           # First proxy port (random selection)
+  read_timeout: 30          # seconds
+  write_timeout: 30         # seconds
+  failure_http_code: 580    # Custom error code for unhealthy connections
+  buffer_size: 32768        # 32KB buffer for data transfer
+
+webserver:
+  port: 9929                # Stats dashboard port

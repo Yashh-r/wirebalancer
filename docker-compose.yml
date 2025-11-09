@@ -1,0 +1,84 @@
+services:
+  wirebalancer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wirebalancer
+    
+    # WireGuard requires privileged mode for full functionality
+    privileged: true
+    
+    # Additional capabilities
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+      - NET_RAW
+    
+    # Kernel parameters needed for WireGuard
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
+      - net.ipv6.conf.all.forwarding=1
+    
+    # Mount WireGuard configurations
+    volumes:
+      - ./config.yml:/app/config.yml:ro
+      - ./wireguard-configs:/etc/wireguard:ro
+      - /lib/modules:/lib/modules:ro  # For WireGuard kernel module
+    
+    # Port mappings (only used if NOT using host network)
+    ports:
+      - "9929:9929"   # Web dashboard
+      - "9930:9930"   # Random proxy
+      - "9931:9931"   # Connection 0 proxy (random selection)
+      - "9932:9932"   # Connection 1 proxy (first wg config)
+      - "9933:9933"   # Connection 2 proxy (second wg config)
+      - "9934:9934"   # Connection 3 proxy (...additional connections)
+      - "9935:9935"   # Connection 4 proxy
+      - "9936:9936"   # Connection 5 proxy
+      - "9937:9937"   # Connection 6 proxy
+      - "9938:9938"   # Connection 7 proxy
+      - "9939:9939"   # Connection 8 proxy
+      - "9940:9940"   # Connection 9 proxy
+      # Add more ports as needed for additional connections
+    
+    # Network configuration
+    # Note: Uncomment the line below for host networking (better performance)
+    # network_mode: "host"
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Resource limits (optional but recommended)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Environment variables (optional)
+    environment:
+      - TZ=UTC
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9929/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+# Optional: If not using host networking
+# networks:
+#   wirebalancer:
+#     driver: bridge

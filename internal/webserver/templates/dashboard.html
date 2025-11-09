@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex,nofollow">
+        <title>WireBalancer Dashboard</title>
+        <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #acc0e0 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .header .subtitle {
+            font-size: 1.125rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 20px 40px rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 30px 60px rgba(6, 182, 212, 0.2);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .connections-container {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 20px 40px rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.1);
+        }
+
+        .connections-header {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(6, 182, 212, 0.1);
+        }
+
+        .connection-item {
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.8) 0%, rgba(224, 242, 254, 0.8) 100%);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+            border-left: 5px solid #06b6d4;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .connection-item:hover {
+            background: linear-gradient(135deg, rgba(224, 242, 254, 0.9) 0%, rgba(186, 230, 253, 0.9) 100%);
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15);
+        }
+
+        .connection-item.unhealthy {
+            border-left-color: #ef4444;
+            background: linear-gradient(135deg, rgba(254, 242, 242, 0.8) 0%, rgba(254, 226, 226, 0.8) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .connection-item.unhealthy:hover {
+            background: linear-gradient(135deg, rgba(254, 226, 226, 0.9) 0%, rgba(252, 165, 165, 0.9) 100%);
+        }
+
+        .connection-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .connection-name {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-healthy {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .status-unhealthy {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .connection-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+        }
+
+        .connection-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .connection-stat-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .connection-stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .auto-refresh {
+            text-align: center;
+            color: #0e0f10;
+            margin-top: 40px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pulse {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #06b6d4;
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(1.3);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            margin-top: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .footer a {
+            color: #06b6d4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #3b82f6;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.25rem;
+            }
+            
+            .connection-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>WireBalancer</h1>
+                <div class="subtitle">High-Performance WireGuard Load Balancer</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Requests</div>
+                    <div class="stat-value">{{.TotalRequests}}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Uptime</div>
+                    <div class="stat-value" style="font-size: 1.75rem;">{{.Uptime}}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Connections</div>
+                    <div class="stat-value">{{len .Connections}}</div>
+                </div>
+            </div>
+
+            <div class="connections-container">
+                <div class="connections-header">WireGuard Connections</div>
+                {{range .Connections}}
+                <div class="connection-item {{if not .Healthy}}unhealthy{{end}}">
+                    <div class="connection-header">
+                        <div class="connection-name">{{.Name}} (#{{.Index}})</div>
+                        <span class="status-badge {{if .Healthy}}status-healthy{{else}}status-unhealthy{{end}}">
+                            {{if .Healthy}}✓ Healthy{{else}}✗ Unhealthy{{end}}
+                        </span>
+                    </div>
+                    <div class="connection-stats">
+                        <div class="connection-stat">
+                            <div class="connection-stat-label">Requests</div>
+                            <div class="connection-stat-value">{{.RequestCount}}</div>
+                        </div>
+                        <div class="connection-stat">
+                            <div class="connection-stat-label">Avg Latency</div>
+                            <div class="connection-stat-value">{{printf "%.0f" .LatencyMs}}ms</div>
+                        </div>
+                        <div class="connection-stat">
+                            <div class="connection-stat-label">Last Check</div>
+                            <div class="connection-stat-value">{{.LastCheck}}</div>
+                        </div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+
+            <div class="auto-refresh">
+                <span class="pulse"></span>
+                Auto-refreshing every 5 seconds
+            </div>
+
+            <div class="footer">
+                GitHub: <a href="https://github.com/tomventa/wirebalancer">github.com/tomventa/wirebalancer</a>
+            </div>
+        </div>
+
+        <script>
+        // Auto-refresh every 5 seconds
+        setTimeout(function() {
+            location.reload();
+        }, 5000);
+    </script>
+    </body>
+</html>
